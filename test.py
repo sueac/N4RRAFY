@@ -25,6 +25,7 @@ def QuoteExtraction(Filename):
             for j in range(len(before_words) - 1):
                 if before_words[j][0].isupper() and before_words[j + 1] in desc:
                     speaker = before_words[j]
+                    nar.append(before_words[j] + " " + before_words[j + 1])
                     break
 
             if speaker is None:
@@ -32,6 +33,7 @@ def QuoteExtraction(Filename):
                 for j in range(len(after_words) - 1):
                     if after_words[j] in desc and after_words[j + 1][0].isupper():
                         speaker = after_words[j + 1]
+                        nar.append(after_words[j] + " " + after_words[j + 1])
                         break
 
             if speaker is not None:
