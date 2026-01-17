@@ -1,9 +1,9 @@
-print("hello world")
 def QuoteExtraction(Filename):
     with open(Filename,'r') as file:
         text=file.read()
     quotes=[]
     nar=[]
+    names=[]
     i=0
     n= len(text)
     desc=["said","says","asked","added","remarked","replied","answered","whispered","mumbled","muttered","shouted","yelled","screamed"]
@@ -23,24 +23,29 @@ def QuoteExtraction(Filename):
 
             before_words = before.split()
             for j in range(len(before_words) - 1):
-                if before_words[j][0].isupper() and before_words[j + 1] in verbs:
+                if before_words[j][0].isupper() and before_words[j + 1] in desc:
                     speaker = before_words[j]
+                    nar.append(before_words[j] + " " + before_words[j + 1])
                     break
 
             if speaker is None:
                 after_words = after.split()
                 for j in range(len(after_words) - 1):
-                    if after_words[j] in verbs and after_words[j + 1][0].isupper():
+                    if after_words[j] in desc and after_words[j + 1][0].isupper():
                         speaker = after_words[j + 1]
+                        nar.append(after_words[j] + " " + after_words[j + 1])
                         break
 
             if speaker is not None:
-                dialogue.append((speaker, quote))
+                quotes.append((speaker, quote))
+                if speaker not in names:
+                    names.append(speaker)
+                
             else:
-                unknown.append(quote)
+                nar.append(quote)
 
             i = end + 1
         else:
             i += 1
 
-    return dialogue, unknown
+    return quotes, nar, names
