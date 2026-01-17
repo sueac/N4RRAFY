@@ -13,7 +13,7 @@ def upload_file():
         status_label.config(text="AI is thinking...")
         root.update_idletasks()
 
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             text = file.read()
 
         words = text.split()
@@ -37,7 +37,7 @@ def speak_words():
 # Create window
 root = tk.Tk()
 root.title("AI Reader")
-root.geometry("500x300")
+root.geometry("1200x1200")
 
 upload_btn = tk.Button(root, text="Upload File", command=upload_file)
 upload_btn.pack(pady=10)

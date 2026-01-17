@@ -1,26 +1,29 @@
-import requests
+from dotenv import load_dotenv
 
-API_KEY = "YOUR_API_KEY"
-VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
+from elevenlabs.client import ElevenLabs
 
-url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+from elevenlabs.play import play
 
-headers = {
-    "xi-api-key": API_KEY,
-    "Content-Type": "application/json"
-}
+import os
 
-data = {
-    "text": "Hello! This is ElevenLabs text to speech.",
-    "voice_settings": {
-        "stability": 0.5,
-        "similarity_boost": 0.75
-    }
-}
+load_dotenv()
 
-response = requests.post(url, json=data, headers=headers)
+elevenlabs = ElevenLabs(
 
-with open("output.mp3", "wb") as f:
-    f.write(response.content)
+  api_key=os.getenv("API_KEY"),
 
-print("Saved output.mp3")
+)
+
+audio = elevenlabs.text_to_speech.convert(
+
+    text="The first move is what sets everything in motion.",
+
+    voice_id="JBFqnCBsd6RMkjVDRZzb",
+
+    model_id="eleven_multilingual_v2",
+
+    output_format="mp3_44100_128",
+
+)
+
+play(audio)
