@@ -16,7 +16,7 @@ elevenlabs = ElevenLabs(
 
 audio = elevenlabs.text_to_speech.convert(
 
-    text="The first move is what sets everything in motion.",
+    text="We are failing this hackathon.",
 
     voice_id="JBFqnCBsd6RMkjVDRZzb",
 
@@ -26,4 +26,8 @@ audio = elevenlabs.text_to_speech.convert(
 
 )
 
-play(audio)
+with open("output.mp3", "wb") as f:
+    for chunk in audio:
+        f.write(chunk)
+
+os.system("output.mp3") 
