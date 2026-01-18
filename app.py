@@ -1,43 +1,47 @@
 import tkinter as tk
 from tkinter import filedialog
-from PIL import Image, ImageTk
 
 def upload_file():
-    global words, word_index
+    global words, word_index, is_paused
+    audio_started.clear()
+    is_paused = False
 
     file_path = filedialog.askopenfilename(
         title="Select a text file",
         filetypes=[("Text files", "*.txt")]
     )
 
-    if file_path:
-        status_label.config(text="AI is thinking...")
-        root.update_idletasks()
+    if not file_path:
+        return
 
-        with open(file_path, "r", encoding="utf-8") as file:
+        with open(file_path, 'r') as file:
             text = file.read()
 
         words = text.split()
         word_index = 0
-        text_box.delete("1.0", tk.END)
 
-        root.after(2000, speak_words)
+        root.after(2000, speak_words)  # wait 2 seconds before speaking
 
 def speak_words():
-    global word_index
+    global word_index, current_highlight
+
+    if is_paused:
+        return  # ⛔ stop advancing text while paused
 
     if word_index < len(words):
         text_box.insert(tk.END, words[word_index] + " ")
-        text_box.see(tk.END)
+        text_box.see(tk.END)  # auto-scroll
         word_index += 1
+
+        # control speaking speed (milliseconds)
         root.after(200, speak_words)
     else:
-        status_label.config(text="AI finished speaking")
+        status_label.config(text="AI finished speaking ✔️")
 
-# ---------------- WINDOW ----------------
+# Create window
 root = tk.Tk()
 root.title("AI Reader")
-root.geometry("500x300")
+root.geometry("1200x1200")
 
 # ---------------- BACKGROUND (JPEG WORKS) ----------------
 bg_image = Image.open("images/bruh.jpg")# JPEG is OK
@@ -52,6 +56,16 @@ background_label.lower()  # send to back
 upload_btn = tk.Button(root, text="Upload File", command=upload_file)
 upload_btn.pack(pady=10)
 
+controls = tk.Frame(root)
+controls.pack(pady=10)
+
+start_btn = tk.Button(controls, text="▶️ Start / Resume", command=start_audio)
+start_btn.pack(side="left", padx=5)
+
+pause_btn = tk.Button(controls, text="⏸️ Pause", command=pause_audio)
+pause_btn.pack(side="left", padx=5)
+
+
 status_label = tk.Label(
     root,
     text="No file selected",
@@ -60,15 +74,8 @@ status_label = tk.Label(
 )
 status_label.pack()
 
-text_box = tk.Text(
-    root,
-    wrap="word",
-    height=5,
-    bg="#003983",
-    fg="white",
-    insertbackground="white"
-)
-text_box.pack(padx=0, pady=0, fill="none", expand=False)
+text_box = tk.Text(root, wrap="word", height=10)
+text_box.pack(padx=10, pady=10, fill="both", expand=True)
 
 # ---------------- STATE ----------------
 words = []
